@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="pt-br">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -47,26 +48,100 @@
         <section class="card">
             <div class="card-header">
                 <div>
-                    <h2>Acesso rápido</h2>
-                    <p>Por onde você quer começar?</p>
+                    <h2>Organize sua demanda</h2>
+                    <p>Linha do tempo de suas atividades.</p>
                 </div>
             </div>
             <div class="quick-links">
-                <a class="quick-link-item" href="cadastro.html">
-                    <span class="ql-title">Cadastro</span>
-                    <span class="ql-desc">Crie sua conta para começar a usar.</span>
+                <div class="quick-link-item">
+                    <span class="ql-title">Nova Demanda</span>
+                    <span class="ql-desc">Solicitação registrada e qualificada.</span>
+                    <div class="kambam" data-kambam-id="kambam-1">
+                        <div class="kambam-header">
+                            <span class="prioridade alta">Alta</span>
+                        </div>
+                        <h3>Lucas Claudio</h3>
+                        <span class="produtos">Produtos...</span>
+                    </div>
+                    <div class="kambam" data-kambam-id="kambam-2">
+                        <div class="kambam-header">
+                            <span class="prioridade media">Média</span>
+                        </div>
+                        <h3>Nicole Carmen</h3>
+                        <span class="produtos">Produtos...</span>
+                    </div>
+                </div>
+                <a class="quick-link-item">
+                    <span class="ql-title">Em Processamento</span>
+                    <span class="ql-desc">Pedido sendo preparado pela equipe.</span>
+                    <div class="kambam" data-kambam-id="kambam-3">
+                        <div class="kambam-header">
+                            <span class="prioridade alta">Alta</span>
+                        </div>
+                        <h3>Mateus Cunha</h3>
+                        <span class="produtos">Produtos...</span>
+                    </div>
+                    <div class="kambam" data-kambam-id="kambam-4">
+                        <div class="kambam-header">
+                            <span class="prioridade media">Média</span>
+                        </div>
+                        <h3>Mario Cezar</h3>
+                        <span class="produtos">Produtos...</span>
+                    </div>
                 </a>
-                <a class="quick-link-item" href="login.html">
-                    <span class="ql-title">Login</span>
-                    <span class="ql-desc">Autentique-se com e-mail e senha.</span>
+                <a class="quick-link-item">
+                    <span class="ql-title">Em Entrega</span>
+                    <span class="ql-desc">Produto sendo entregue ao cliente.</span>
+                    <div class="kambam" data-kambam-id="kambam-5">
+                        <div class="kambam-header">
+                            <span class="prioridade media">Média</span>
+                        </div>
+                        <h3>Maria Medeiros</h3>
+                        <span class="produtos">Produtos...</span>
+                    </div>
+                    <div class="kambam" data-kambam-id="kambam-6">
+                        <div class="kambam-header">
+                            <span class="prioridade baixa">Baixa</span>
+                        </div>
+                        <h3>Guilherme Diaz</h3>
+                        <span class="produtos">Produtos...</span>
+                    </div>
                 </a>
-                <a class="quick-link-item" href="perfil.html">
-                    <span class="ql-title">Perfil</span>
-                    <span class="ql-desc">Visualize seus dados do backend.</span>
+                <a class="quick-link-item concluida">
+                    <span class="ql-title concluida">Concluída</span>
+                    <span class="ql-desc">Pedido finalizado com sucesso.</span>
+                    <div class="kambam" data-kambam-id="kambam-7">
+                        <div class="kambam-header">
+                            <span class="prioridade baixa">Baixa</span>
+                        </div>
+                        <h3>João Paulo</h3>
+                        <span class="produtos concluido">Produtos...</span>
+                    </div>
+                    <div class="kambam" data-kambam-id="kambam-8">
+                        <div class="kambam-header">
+                            <span class="prioridade baixa">Baixa</span>
+                        </div>
+                        <h3>Larissa Souza</h3>
+                        <span class="produtos concluido">Produtos...</span>
+                    </div>
                 </a>
-                <a class="quick-link-item" href="tarefas.html">
-                    <span class="ql-title">Minhas Tarefas</span>
-                    <span class="ql-desc">Crie e gerencie suas tarefas.</span>
+                <a class="quick-link-item">
+                    <span class="ql-title">Em Atraso</span>
+                    <span class="ql-desc">Demanda atrasada no processo de entrega.</span>
+                    <div class="kambam" data-kambam-id="kambam-9">
+                        <div class="kambam-header">
+                            <span class="prioridade alta">Alta</span>
+                        </div>
+                        <h3>Laura Martines</h3>
+                        <span class="produtos">Produtos...</span>
+                    </div>
+                    <div class="kambam" data-kambam-id="kambam-10">
+                        <div class="kambam-header">
+                            <span class="prioridade alta">Alta</span>
+                        </div>
+                        <h3>David Paes</h3>
+                        <span class="produtos">Produtos...</span>
+                    </div>
                 </a>
             </div>
         </section>
@@ -96,8 +171,8 @@
                 <div class="step">
                     <div class="step-number">3</div>
                     <div class="step-content">
-                        <strong>Gerencie suas tarefas</strong>
-                        <span>Crie, conclua e exclua tarefas em tempo real.</span>
+                        <strong>Gerencie suas demandas</strong>
+                        <span>Crie, conclua e suas demandas de uma maneira fácil e eficiente.</span>
                     </div>
                 </div>
             </div>
@@ -105,9 +180,50 @@
 
     </div>
 
-    <footer>TaskFlow · Node.js + Express + SQLite</footer>
+    <footer>Orbita · Node.js + Express + Supabase</footer>
 
     <!-- ── SCRIPTS ── -->
     <script src="js/api.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const kambamCards = document.querySelectorAll('.kambam');
+            const columns = document.querySelectorAll('.quick-link-item');
+
+            kambamCards.forEach((card) => {
+                card.setAttribute('draggable', 'true');
+                card.addEventListener('dragstart', (event) => {
+                    event.dataTransfer.setData('text/plain', card.dataset.kambamId || '');
+                    card.classList.add('dragging');
+                });
+
+                card.addEventListener('dragend', () => {
+                    card.classList.remove('dragging');
+                });
+            });
+
+            columns.forEach((column) => {
+                column.addEventListener('dragover', (event) => {
+                    event.preventDefault();
+                    column.classList.add('drag-over');
+                });
+
+                column.addEventListener('dragleave', () => {
+                    column.classList.remove('drag-over');
+                });
+
+                column.addEventListener('drop', (event) => {
+                    event.preventDefault();
+                    column.classList.remove('drag-over');
+
+                    const id = event.dataTransfer.getData('text/plain');
+                    const draggedCard = document.querySelector(`[data-kambam-id="${id}"]`);
+                    if (draggedCard) {
+                        column.appendChild(draggedCard);
+                    }
+                });
+            });
+        });
+    </script>
 </body>
+
 </html>

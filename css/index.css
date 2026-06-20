@@ -243,7 +243,7 @@ body {
    CARD
    ============================================================ */
 .card {
-    background: var(--color-surface);
+    background: rgb(26, 26, 26);
     border: 1px solid var(--color-border);
     border-radius: var(--radius-lg);
     padding: var(--space-8);
@@ -303,6 +303,111 @@ body {
     color: #3730a3;
     font-size: var(--font-size-sm);
     line-height: 1.6;
+}
+
+.kambam {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--space-2);
+    width: 140px;
+    background: rgb(62, 62, 62);
+    border: 1px solid #000;
+    border-radius: 10px;
+    padding: 12px 12px 10px;
+    font-family: var(--font-sans), system-ui, -apple-system, sans-serif;
+    transition: .3s;
+}
+
+.kambam:hover {
+    transform: translateY(-3px);
+}
+
+.kambam {
+    cursor: grab;
+}
+
+.kambam:active {
+    cursor: grabbing;
+}
+
+.kambam-header {
+    display: flex;
+    justify-content: flex-end;
+    margin-bottom: 8px;
+}
+
+.quick-link-item.drag-over {
+    outline: 2px dashed rgba(59, 130, 246, 0.85);
+}
+
+.prioridade {
+    font-size: 10px;
+    font-weight: 600;
+    color: #ffffff;
+    padding: 2px 8px;
+    border-radius: 20px;
+}
+
+.prioridade.alta {
+    background: #f97416c5; /* Laranja */
+}
+
+.prioridade.media {
+    background: #fddf47ad; /* Amarelo */
+    color: #ffffff;
+}
+
+.prioridade.baixa {
+    background: #3b83f6b0; /* Azul */
+}
+
+.produtos {
+    font-size: 10px;
+    font-weight: 600;
+    color: #ffffff;
+    background: #292929;
+    padding: 2px 8px;
+    border-radius: 20px;
+}
+
+.quick-link-item.concluida .produtos {
+    background: #16a34a;
+    color: #ffffff;
+}
+
+.quick-link-item.concluida .produtos.concluido {
+    background: #16a34a;
+}
+
+.kanban-column[data-status="concluida"] .produtos {
+    background: #16a34a;
+    color: #ffffff;
+}
+
+.kanban-column[data-status="concluida"] .produtos.concluido {
+    background: #16a34a;
+}
+
+.kambam h3 {
+    margin: 0 0 6px;
+    font-size: 14px;
+    color: #ffffff;
+}
+
+.kambam p {
+    margin: 0;
+    font-size: 11px;
+    color: #ffffff;
+    line-height: 1.4;
+}
+
+.kambam-footer {
+    margin-top: 8px;
+    padding-top: 8px;
+    border-top: 1px solid #ddd;
+    font-size: 10px;
+    color: #666;
 }
 
 /* ============================================================
@@ -481,7 +586,7 @@ button.small {
    ============================================================ */
 .quick-links {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
     gap: var(--space-4);
     margin-top: var(--space-2);
 }
@@ -491,9 +596,10 @@ button.small {
     flex-direction: column;
     align-items: flex-start;
     gap: var(--space-2);
-    padding: var(--space-5);
+    padding: var(--space-6);
+    padding-bottom: 20px;
     border-radius: var(--radius-lg);
-    background: var(--color-surface-alt);
+    background-color: #272727;
     border: 1.5px solid var(--color-border);
     text-decoration: none;
     color: var(--color-text);
