@@ -1,6 +1,6 @@
 const formTarefa = document.getElementById('form-tarefa');
 const inputId = document.getElementById('tarefa-id');
-const inputTitulo = document.getElementById('tarefa-titulo');
+const inputNomeCliente = document.getElementById('tarefa-nome-cliente');
 const inputDescricao = document.getElementById('tarefa-descricao');
 const inputPrioridade = document.getElementById('tarefa-prioridade');
 const inputStatus = document.getElementById('tarefa-status');
@@ -73,7 +73,7 @@ function criarCardHtml(demanda) {
     const descricao = demanda.descricao || '';
     return `
         <div class="tarefa-card ${status}">
-            <div class="tarefa-card-title"><b>#${demanda.id}</b> ${demanda.titulo}</div>
+            <div class="tarefa-card-title"><b>#${demanda.id}</b> ${demanda.nome_cliente}</div>
             ${descricao ? `<div class="tarefa-card-desc">${descricao}</div>` : ''}
             <div>${criarBadgeStatus(status)}</div>
         </div>
@@ -88,7 +88,7 @@ function criarKanbanItem(demanda) {
     item.dataset.id = demanda.id;
 
     item.innerHTML = `
-        <div class="tarefa-card-title"><b>#${demanda.id}</b> ${demanda.titulo}</div>
+        <div class="tarefa-card-title"><b>#${demanda.id}</b> ${demanda.nome_cliente}</div>
         ${demanda.descricao ? `<div class="tarefa-card-desc">${demanda.descricao}</div>` : ''}
         <div>${criarBadgeStatus(status)}</div>
     `;
@@ -134,7 +134,7 @@ function renderTabela() {
         const linha = document.createElement('tr');
         linha.innerHTML = `
             <td>${demanda.id}</td>
-            <td>${demanda.titulo}</td>
+            <td>${demanda.nome_cliente}</td>
             <td>${demanda.descricao || '-'}</td>
             <td>${criarBadgeStatus(status)}</td>
             <td class="table-actions">
@@ -259,7 +259,7 @@ function setCamposSomenteLeitura(somenteLeitura) {
 
 function preencherModal(demanda) {
     inputId.value = demanda?.id || '';
-    inputTitulo.value = demanda?.titulo || '';
+    inputNomeCliente.value = demanda?.nome_cliente || '';
     inputDescricao.value = demanda?.descricao || '';
     if (inputPrioridade) {
         inputPrioridade.value = demanda?.prioridade || 'baixa';
@@ -291,7 +291,7 @@ function abrirNovaTarefa() {
     tarefaSelecionadaId = null;
     modalMode = 'create';
     window.limparProdutosSelecionados();
-    preencherModal({ id: '', titulo: '', descricao: '', status: 'novo', prioridade: 'baixa' });
+    preencherModal({ id: '', nome_cliente: '', descricao: '', status: 'novo', prioridade: 'media' });
     window.atualizarTabelaProdutos();
     aplicarModoModal();
 }
@@ -327,7 +327,7 @@ async function excluirTarefa(id = null) {
     const confirmar = window.Swal
         ? await Swal.fire({
             icon: 'warning',
-            text: `Excluir a demanda "${demanda.titulo}"?`,
+            text: `Excluir a demanda "${demanda.nome_cliente}"?`,
             showCancelButton: true,
             confirmButtonText: 'Excluir',
             cancelButtonText: 'Cancelar',
@@ -352,17 +352,17 @@ async function criarTarefa(event) {
     event.preventDefault();
 
     const id = inputId.value;
-    const titulo = inputTitulo.value.trim();
+    const nome_cliente = inputNomeCliente.value.trim();
     const descricao = inputDescricao.value.trim();
     const prioridade = inputPrioridade ? inputPrioridade.value : 'baixa';
     const status = inputStatus.value;
 
-    if (!titulo) return;
+    if (!nome_cliente) return;
 
     try {
         if (modalMode === 'edit' && id) {
             const payload = {
-                titulo,
+                nome_cliente,
                 descricao,
                 prioridade,
                 status,
@@ -389,7 +389,7 @@ async function criarTarefa(event) {
             const nova = await apiRequest('/demandas', {
                 method: 'POST',
                 body: {
-                    titulo,
+                    nome_cliente,
                     descricao,
                     prioridade,
                     status,
