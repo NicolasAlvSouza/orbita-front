@@ -266,7 +266,7 @@ function renderTudo() {
 
 async function carregarTarefas() {
     try {
-        const resposta = await apiRequest('/tarefas');
+        const resposta = await apiRequest('/demandas');
 
         if (Array.isArray(resposta)) {
             tarefas = resposta;
@@ -292,7 +292,7 @@ async function atualizarStatusApi(tarefa, novoStatus) {
         concluida: novoStatus === 'concluida',
     };
 
-    await apiRequest(`/tarefas/${tarefa.id}`, {
+    await apiRequest(`/demandas/${tarefa.id}`, {
         method: 'PUT',
         body: payload,
     });
@@ -424,7 +424,7 @@ async function excluirTarefa(id = null) {
     if (!confirmar.isConfirmed) return;
 
     try {
-        await apiRequest(`/tarefas/${tarefa.id}`, { method: 'DELETE' });
+        await apiRequest(`/demandas/${tarefa.id}`, { method: 'DELETE' });
         tarefas = tarefas.filter((item) => String(item.id) !== String(tarefa.id));
         tarefaModal?.hide();
         renderTudo();
@@ -453,7 +453,7 @@ async function criarTarefa(event) {
                 concluida: status === 'concluida',
                 produtos: produtosSelecionados
             };
-            const resposta = await apiRequest(`/tarefas/${id}`, {
+            const resposta = await apiRequest(`/demandas/${id}`, {
                 method: 'PUT',
                 body: payload,
             });
@@ -469,7 +469,7 @@ async function criarTarefa(event) {
 
             mostrarResultado('Tarefa atualizada com sucesso.');
         } else {
-            const nova = await apiRequest('/tarefas', {
+            const nova = await apiRequest('/demandas', {
                 method: 'POST',
                 body: { 
                     titulo, 
