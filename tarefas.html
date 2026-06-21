@@ -63,17 +63,17 @@
                     <h3>Em produção</h3>
                     <div id="kanban-andamento" class="kanban-list"></div>
                 </div>
-                <div class="kanban-column" data-status="andamento">
+                <div class="kanban-column" data-status="entrega">
                     <h3>Em entrega</h3>
-                    <div id="kanban-andamento" class="kanban-list"></div>
+                    <div id="kanban-entrega" class="kanban-list"></div>
                 </div>
                 <div class="kanban-column" data-status="concluida">
                     <h3>Concluída</h3>
                     <div id="kanban-concluida" class="kanban-list"></div>
                 </div>
-                <div class="kanban-column" data-status="andamento">
+                <div class="kanban-column" data-status="atrasada">
                     <h3>Atrasada</h3>
-                    <div id="kanban-andamento" class="kanban-list"></div>
+                    <div id="kanban-atrasada" class="kanban-list"></div>
                 </div>
             </div>
         </section>
@@ -96,7 +96,7 @@
 
     <footer>TaskFlow · Node.js + Express + SQLite</footer>
 
-    <div class="modal fade" id="taretofaModal" tabindex="-1" aria-labelledby="tarefaModalTitle" aria-hidden="true">
+    <div class="modal fade" id="tarefaModal" tabindex="-1" aria-labelledby="tarefaModalTitle" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content">
                 <form id="form-tarefa" class="task-form-modal">
@@ -127,12 +127,29 @@
                             <select id="tarefa-status">
                                 <option value="novo">Novo</option>
                                 <option value="andamento">Em produção</option>
-                                <option value="andamento">Em entrega</option>
+                                <option value="entrega">Em entrega</option>
                                 <option value="concluida">Concluída</option>
-                                <option value="concluida">Atrasada</option>
+                                <option value="atrasada">Atrasada</option>
                             </select>
-                        <div> 
-                            <button id="btn-modal-produtos" type="button">Adicionar produtos...</button>  
+                        </div>
+                        <div class="form-field">
+                            <button id="btn-modal-produtos" type="button" class="btn btn-secondary">Adicionar produtos...</button>
+                        </div>
+                        <div class="form-field">
+                            <label>Produtos adicionados:</label>
+                            <div id="produtos-container" style="max-height: 200px; overflow-y: auto;">
+                                <table id="tabela-produtos" class="table table-sm" style="margin-bottom: 0;">
+                                    <thead>
+                                        <tr>
+                                            <th>Produto</th>
+                                            <th>Qtd</th>
+                                            <th>Ação</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="corpo-tabela-produtos"></tbody>
+                                </table>
+                            </div>
+                            <p id="sem-produtos-msg" style="color: #9aa6b2; font-size: 0.875rem; margin-top: 0.5rem;">Nenhum produto adicionado</p>
                         </div>
                     </div>
                     <div class="modal-footer">
@@ -140,6 +157,36 @@
                         <button id="btn-modal-editar" type="button" class="btn btn-outline-primary is-hidden">Editar</button>
                         <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancelar</button>
                         <button id="btn-modal-salvar" type="submit" class="btn btn-primary">Salvar</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal para adicionar produtos à demanda -->
+    <div class="modal fade" id="produtoModal" tabindex="-1" aria-labelledby="produtoModalTitle" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <form id="form-produto" class="task-form-modal">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="produtoModalTitle">Adicionar Produto</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fechar"></button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="form-field">
+                            <label for="produto-select">Produto</label>
+                            <select id="produto-select" required>
+                                <option value="">Selecione um produto</option>
+                            </select>
+                        </div>
+                        <div class="form-field">
+                            <label for="produto-quantidade">Quantidade</label>
+                            <input type="number" id="produto-quantidade" min="1" value="1" required>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancelar</button>
+                        <button id="btn-adicionar-produto" type="submit" class="btn btn-primary">Adicionar</button>
                     </div>
                 </form>
             </div>

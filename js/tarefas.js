@@ -8,6 +8,7 @@ const btnNovaTarefa = document.getElementById('btn-nova-tarefa');
 const btnModalSalvar = document.getElementById('btn-modal-salvar');
 const btnModalEditar = document.getElementById('btn-modal-editar');
 const btnModalExcluir = document.getElementById('btn-modal-excluir');
+const btnModalProdutos = document.getElementById('btn-modal-produtos');
 
 const listaCards = document.getElementById('lista-tarefas-cards');
 const listaTabela = document.getElementById('lista-tarefas-tabela');
@@ -19,19 +20,28 @@ const tabelaWrapper = document.getElementById('tarefas-tabela-wrapper');
 const colunaNovo = document.getElementById('kanban-novo');
 const colunaAndamento = document.getElementById('kanban-andamento');
 const colunaConcluida = document.getElementById('kanban-concluida');
+const colunaEntrega = document.getElementById('kanban-entrega');
+const colunaAtrasada = document.getElementById('kanban-atrasada');
 
 const btnViewCards = document.getElementById('view-cards');
 const btnViewKanban = document.getElementById('view-kanban');
 const btnViewTable = document.getElementById('view-table');
 const tarefaModalEl = document.getElementById('tarefaModal');
+const produtoModalEl = document.getElementById('produtoModal');
 
 const tarefaModal = tarefaModalEl && window.bootstrap
     ? bootstrap.Modal.getOrCreateInstance(tarefaModalEl)
     : null;
 
+const produtoModal = produtoModalEl && window.bootstrap
+    ? bootstrap.Modal.getOrCreateInstance(produtoModalEl)
+    : null;
+
 const STATUS_LABEL = {
     novo: 'Novo',
     andamento: 'Em andamento',
+    entrega: 'Em entrega',
+    atrasada: 'Atrasada',
     concluida: 'Concluída',
 };
 
@@ -39,11 +49,15 @@ let tarefas = [];
 let viewMode = 'cards';
 let tarefaSelecionadaId = null;
 let modalMode = 'create';
+let produtosSelecionados = [];
+let todosProdutos = [];
 
 function normalizarStatus(tarefa) {
     const bruto = String(tarefa?.status || '').toLowerCase();
 
     if (bruto.includes('and')) return 'andamento';
+    if (bruto.includes('entreg')) return 'entrega';
+    if (bruto.includes('atras')) return 'atrasada';
     if (bruto.includes('concl')) return 'concluida';
     if (tarefa?.concluida) return 'concluida';
 
@@ -58,6 +72,79 @@ function aplicarViewMode() {
     btnViewCards.classList.toggle('active', viewMode === 'cards');
     btnViewKanban.classList.toggle('active', viewMode === 'kanban');
     btnViewTable.classList.toggle('active', viewMode === 'table');
+}
+
+async function carregarProdutos() {
+    try {
+        const resposta = await apiRequest('/produtos');
+        let produtos = [];
+        
+        if (Array.isArray(resposta)) {
+            produtos = resposta;
+        } else if (Array.isArray(resposta?.produtos)) {
+            produtos = resposta.produtos;
+        } else if (Array.isArray(resposta?.data)) {
+            produtos = resposta.data;
+        }
+        
+        todosProdutos = produtos;
+        preencherSelectProdutos();
+    } catch (erro) {
+        console.error('Erro ao carregar produtos:', erro.message);
+        mostrarResultado(`Erro ao carregar produtos: ${erro.message}`, 'error');
+    }
+}
+
+function preencherSelectProdutos() {
+    const selectProduto = document.getElementById('produto-select');
+    selectProduto.innerHTML = '<option value="">Selecione um produto</option>';
+    
+    todosProdutos.forEach(produto => {
+        const option = document.createElement('option');
+        option.value = produto.id;
+        option.textContent = produto.nome || produto.name || `Produto ${produto.id}`;
+        selectProduto.appendChild(option);
+    });
+}
+
+function atualizarTabelaProdutos() {
+    const tbody = document.getElementById('corpo-tabela-produtos');
+    const semProdutosMsg = document.getElementById('sem-produtos-msg');
+    const tabelaProdutos = document.getElementById('tabela-produtos');
+    
+    tbody.innerHTML = '';
+    
+    if (produtosSelecionados.length === 0) {
+        semProdutosMsg.style.display = 'block';
+        tabelaProdutos.style.display = 'none';
+    } else {
+        semProdutosMsg.style.display = 'none';
+        tabelaProdutos.style.display = 'table';
+        
+        produtosSelecionados.forEach((item, index) => {
+            const produto = todosProdutos.find(p => String(p.id) === String(item.produtoId));
+            const nomeProduto = produto ? (produto.nome || produto.name || `Produto ${item.produtoId}`) : `Produto ${item.produtoId}`;
+            
+            const tr = document.createElement('tr');
+            tr.innerHTML = `
+                <td>${nomeProduto}</td>
+                <td>${item.quantidade}</td>
+                <td><button type="button" class="btn-remover-produto" onclick="removerProdutoSelecionado(${index})">Remover</button></td>
+            `;
+            tbody.appendChild(tr);
+        });
+    }
+}
+
+function removerProdutoSelecionado(index) {
+    produtosSelecionados.splice(index, 1);
+    atualizarTabelaProdutos();
+}
+
+function abrirModalProduto() {
+    if (produtoModal) {
+        produtoModal.show();
+    }
 }
 
 function criarBadgeStatus(status) {
@@ -148,7 +235,9 @@ function renderTabela() {
 function renderKanban() {
     colunaNovo.innerHTML = '';
     colunaAndamento.innerHTML = '';
+    colunaEntrega.innerHTML = '';
     colunaConcluida.innerHTML = '';
+    colunaAtrasada.innerHTML = '';
 
     tarefas.forEach((tarefa) => {
         const status = normalizarStatus(tarefa);
@@ -156,8 +245,12 @@ function renderKanban() {
 
         if (status === 'andamento') {
             colunaAndamento.appendChild(card);
+        } else if (status === 'entrega') {
+            colunaEntrega.appendChild(card);
         } else if (status === 'concluida') {
             colunaConcluida.appendChild(card);
+        } else if (status === 'atrasada') {
+            colunaAtrasada.appendChild(card);
         } else {
             colunaNovo.appendChild(card);
         }
@@ -275,7 +368,9 @@ function aplicarModoModal() {
 function abrirNovaTarefa() {
     tarefaSelecionadaId = null;
     modalMode = 'create';
+    produtosSelecionados = [];
     preencherModal({ id: '', titulo: '', descricao: '', status: 'novo' });
+    atualizarTabelaProdutos();
     aplicarModoModal();
 }
 
@@ -286,6 +381,11 @@ function verTarefa(id) {
     tarefaSelecionadaId = tarefa.id;
     modalMode = 'view';
     preencherModal(tarefa);
+    
+    // Carregar produtos da tarefa
+    produtosSelecionados = tarefa.produtos ? [...tarefa.produtos] : [];
+    atualizarTabelaProdutos();
+    
     aplicarModoModal();
     tarefaModal?.show();
 }
@@ -297,6 +397,11 @@ function editarTarefa(id = null) {
     tarefaSelecionadaId = tarefa.id;
     modalMode = 'edit';
     preencherModal(tarefa);
+    
+    // Carregar produtos da tarefa
+    produtosSelecionados = tarefa.produtos ? [...tarefa.produtos] : [];
+    atualizarTabelaProdutos();
+    
     aplicarModoModal();
     tarefaModal?.show();
 }
@@ -341,7 +446,13 @@ async function criarTarefa(event) {
 
     try {
         if (modalMode === 'edit' && id) {
-            const payload = { titulo, descricao, status, concluida: status === 'concluida' };
+            const payload = { 
+                titulo, 
+                descricao, 
+                status, 
+                concluida: status === 'concluida',
+                produtos: produtosSelecionados
+            };
             const resposta = await apiRequest(`/tarefas/${id}`, {
                 method: 'PUT',
                 body: payload,
@@ -360,11 +471,23 @@ async function criarTarefa(event) {
         } else {
             const nova = await apiRequest('/tarefas', {
                 method: 'POST',
-                body: { titulo, descricao, status, concluida: status === 'concluida' },
+                body: { 
+                    titulo, 
+                    descricao, 
+                    status, 
+                    concluida: status === 'concluida',
+                    produtos: produtosSelecionados
+                },
             });
 
             if (nova && nova.id) {
-                tarefas.push({ ...nova, descricao, status, concluida: status === 'concluida' });
+                tarefas.push({ 
+                    ...nova, 
+                    descricao, 
+                    status, 
+                    concluida: status === 'concluida',
+                    produtos: produtosSelecionados
+                });
             } else {
                 await carregarTarefas();
             }
@@ -376,11 +499,47 @@ async function criarTarefa(event) {
         if (tarefaModal) tarefaModal.hide();
         formTarefa.reset();
         inputStatus.value = 'novo';
+        produtosSelecionados = [];
         modalMode = 'create';
         tarefaSelecionadaId = null;
     } catch (erro) {
         mostrarResultado(`Erro ao salvar tarefa: ${erro.message}`, 'error');
     }
+}
+
+function adicionarProduto(event) {
+    event.preventDefault();
+    
+    const produtoId = document.getElementById('produto-select').value;
+    const quantidade = parseInt(document.getElementById('produto-quantidade').value);
+    
+    if (!produtoId || !quantidade || quantidade < 1) {
+        mostrarResultado('Por favor, selecione um produto e informe uma quantidade válida', 'error');
+        return;
+    }
+    
+    // Verificar se o produto já foi adicionado
+    const jaAdicionado = produtosSelecionados.find(p => String(p.produtoId) === String(produtoId));
+    
+    if (jaAdicionado) {
+        // Atualizar quantidade
+        jaAdicionado.quantidade += quantidade;
+    } else {
+        // Adicionar novo produto
+        produtosSelecionados.push({
+            produtoId: parseInt(produtoId),
+            quantidade: quantidade
+        });
+    }
+    
+    atualizarTabelaProdutos();
+    
+    // Resetar form e fechar modal
+    document.getElementById('form-produto').reset();
+    document.getElementById('produto-quantidade').value = '1';
+    if (produtoModal) produtoModal.hide();
+    
+    mostrarResultado('Produto adicionado com sucesso!');
 }
 
 btnViewCards.addEventListener('click', () => {
@@ -403,14 +562,23 @@ formTarefa.addEventListener('submit', criarTarefa);
 btnNovaTarefa.addEventListener('click', abrirNovaTarefa);
 btnModalEditar.addEventListener('click', () => editarTarefa());
 btnModalExcluir.addEventListener('click', () => excluirTarefa());
+btnModalProdutos.addEventListener('click', abrirModalProduto);
+
+const formProduto = document.getElementById('form-produto');
+if (formProduto) {
+    formProduto.addEventListener('submit', adicionarProduto);
+}
 
 window.verTarefa = verTarefa;
 window.editarTarefa = editarTarefa;
 window.excluirTarefa = excluirTarefa;
+window.removerProdutoSelecionado = removerProdutoSelecionado;
 
 configurarDrop(colunaNovo, 'novo');
 configurarDrop(colunaAndamento, 'andamento');
 configurarDrop(colunaConcluida, 'concluida');
+configurarDrop(colunaEntrega, 'entrega');
+configurarDrop(colunaAtrasada, 'atrasada');
 
 window.addEventListener('DOMContentLoaded', async () => {
     if (!getToken()) {
@@ -418,5 +586,6 @@ window.addEventListener('DOMContentLoaded', async () => {
         return;
     }
 
+    await carregarProdutos();
     await carregarTarefas();
 });
