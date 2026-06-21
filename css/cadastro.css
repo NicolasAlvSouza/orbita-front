@@ -15,7 +15,7 @@
     --color-bg:             #000000;
     --color-surface:        #0d0d0d;
     --color-surface-alt:    #1a1a1a;
-    --color-border:         #2e2e2e;
+    --color-border:         #4a4a4a;
 
     /* Cores de texto */
     --color-text:           #ffffff;
@@ -185,7 +185,7 @@ body {
 .form-field input,
 .form-control {
     background: var(--color-surface-alt);
-    border: 1.5px solid var(--color-border);
+    border: 2px solid var(--color-border);
     color: var(--color-text);
 }
 
@@ -198,6 +198,7 @@ body {
 .form-control:focus {
     border-color: var(--color-text);
     background: var(--color-surface-alt);
+    color: #ffffff;
     box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.12);
 }
 

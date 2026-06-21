@@ -5,17 +5,17 @@
     /* Cores primárias (cinza, azul, verde) */
     --color-primary:        #000000;
     --color-primary-dark:   #000000;
-    --color-primary-light:  #d8d8d8;
+    --color-primary-light:  #ffffff;
 
     /* Cores de superfície */
     --color-bg:             #000000;
-    --color-surface:        #272727;
-    --color-surface-alt:    #616161;
+    --color-surface:        #000000;
+    --color-surface-alt:    #000000;
     --color-border:         #000000;
 
     /* Cores de texto */
-    --color-text:           #ffffff;
-    --color-text-muted:     #f0f0f0;
+    --color-text:           rgb(255, 255, 255);
+    --color-text-muted:     #ffffffe1;
 
     /* Feedback */
     --color-success:        #15803d;
@@ -53,9 +53,9 @@
     --font-size-3xl:  1.875rem;
 
     /* Sombras */
-    --shadow-sm:  0 1px 3px rgba(0,0,0,.06), 0 1px 2px rgba(0,0,0,.04);
-    --shadow-md:  0 4px 12px rgba(0,0,0,.07), 0 2px 4px rgba(0,0,0,.05);
-    --shadow-lg:  0 10px 30px rgba(0,0,0,.10), 0 4px 10px rgba(0,0,0,.06);
+    --shadow-sm:  0 1px 3px rgb(155, 155, 155), 0 4px 8px rgb(50, 50, 50);
+    --shadow-md:  0 4px 12px rgb(117, 117, 117), 0 4px 8px rgb(50, 50, 50);
+    --shadow-lg:  0 10px 30px rgb(117, 117, 117), 0 4px 8px rgba(50, 50, 50);
 
     /* Bordas */
     --radius-sm:  6px;
@@ -108,15 +108,29 @@ body {
     align-items: center;
     justify-content: space-between;
     padding: var(--space-3) var(--space-4);
-    gap: var(--space-4);
+    gap: var(--space-2);
+}
+
+.topbar-branding {
+    display: flex;
+    align-items: center;
+    gap: var(--space-1);
+    flex-shrink: 0;
 }
 
 .topbar-brand {
     display: flex;
     align-items: center;
-    gap: var(--space-2);
     text-decoration: none;
     color: var(--color-text);
+}
+
+.topbar-logo {
+    width: 52px;
+    height: 52px;
+    object-fit: contain;
+    flex-shrink: 0;
+    display: block;
 }
 
 .topbar-brand .brand-icon {
@@ -190,9 +204,10 @@ body {
    PAGE HERO (substitui o <header> antigo)
    ============================================================ */
 .page-hero {
-    background: linear-gradient(135deg, var(--color-primary) 0%, #818cf8 100%);
+    background: transparent url("../img/buracoNegroBaner.jpg") center/cover no-repeat;
     color: white;
-    padding: var(--space-12) var(--space-4);
+    min-height: 360px;
+    padding: calc(var(--space-12) * 1.5) var(--space-4);
     text-align: center;
 }
 
@@ -201,11 +216,13 @@ body {
     font-weight: 800;
     letter-spacing: -0.5px;
     margin-bottom: var(--space-2);
+    text-shadow: 0 2px 8px rgba(0, 0, 0, 0.85);
 }
 
 .page-hero p {
     font-size: var(--font-size-lg);
     opacity: 0.88;
+    text-shadow: 0 2px 8px rgba(0, 0, 0, 0.75);
 }
 
 /* ============================================================
@@ -226,7 +243,7 @@ body {
    CARD
    ============================================================ */
 .card {
-    background: var(--color-surface);
+    background: rgb(26, 26, 26);
     border: 1px solid var(--color-border);
     border-radius: var(--radius-lg);
     padding: var(--space-8);
@@ -288,6 +305,111 @@ body {
     line-height: 1.6;
 }
 
+.kambam {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--space-2);
+    width: 140px;
+    background: rgb(62, 62, 62);
+    border: 1px solid #000;
+    border-radius: 10px;
+    padding: 12px 12px 10px;
+    font-family: var(--font-sans), system-ui, -apple-system, sans-serif;
+    transition: .3s;
+}
+
+.kambam:hover {
+    transform: translateY(-3px);
+}
+
+.kambam {
+    cursor: grab;
+}
+
+.kambam:active {
+    cursor: grabbing;
+}
+
+.kambam-header {
+    display: flex;
+    justify-content: flex-end;
+    margin-bottom: 8px;
+}
+
+.quick-link-item.drag-over {
+    outline: 2px dashed rgba(59, 130, 246, 0.85);
+}
+
+.prioridade {
+    font-size: 10px;
+    font-weight: 600;
+    color: #ffffff;
+    padding: 2px 8px;
+    border-radius: 20px;
+}
+
+.prioridade.alta {
+    background: #f97416c5; /* Laranja */
+}
+
+.prioridade.media {
+    background: #fddf47ad; /* Amarelo */
+    color: #ffffff;
+}
+
+.prioridade.baixa {
+    background: #3b83f6b0; /* Azul */
+}
+
+.produtos {
+    font-size: 10px;
+    font-weight: 600;
+    color: #ffffff;
+    background: #292929;
+    padding: 2px 8px;
+    border-radius: 20px;
+}
+
+.quick-link-item.concluida .produtos {
+    background: #16a34a;
+    color: #ffffff;
+}
+
+.quick-link-item.concluida .produtos.concluido {
+    background: #16a34a;
+}
+
+.kanban-column[data-status="concluida"] .produtos {
+    background: #16a34a;
+    color: #ffffff;
+}
+
+.kanban-column[data-status="concluida"] .produtos.concluido {
+    background: #16a34a;
+}
+
+.kambam h3 {
+    margin: 0 0 6px;
+    font-size: 14px;
+    color: #ffffff;
+}
+
+.kambam p {
+    margin: 0;
+    font-size: 11px;
+    color: #ffffff;
+    line-height: 1.4;
+}
+
+.kambam-footer {
+    margin-top: 8px;
+    padding-top: 8px;
+    border-top: 1px solid #ddd;
+    font-size: 10px;
+    color: #666;
+}
+
 /* ============================================================
    FORMULÁRIOS
    ============================================================ */
@@ -316,9 +438,9 @@ body {
 }
 
 .form-field input:focus {
-  border-color: var(--color-primary);
+    border-color: var(--color-primary);
     box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.15);
-    background: white;  
+    background: white;
 }
 
 .form-field input::placeholder {
@@ -464,7 +586,7 @@ button.small {
    ============================================================ */
 .quick-links {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
     gap: var(--space-4);
     margin-top: var(--space-2);
 }
@@ -474,9 +596,10 @@ button.small {
     flex-direction: column;
     align-items: flex-start;
     gap: var(--space-2);
-    padding: var(--space-5);
+    padding: var(--space-6);
+    padding-bottom: 20px;
     border-radius: var(--radius-lg);
-    background: var(--color-surface-alt);
+    background-color: #272727;
     border: 1.5px solid var(--color-border);
     text-decoration: none;
     color: var(--color-text);
@@ -939,20 +1062,11 @@ table tbody tr:hover { background: #fafafa; }
    BOOTSTRAP OVERRIDES E NOVOS COMPONENTES
    ============================================================ */
 .page-hero {
-    background: linear-gradient(135deg, #0f172a 0%, #1d4ed8 55%, #38bdf8 100%);
+    background: transparent url("../img/buracoNegroBaner.jpg") center/cover no-repeat;
+    min-height: 360px;
+    padding: calc(var(--space-12) * 1.5) var(--space-4);
     position: relative;
     overflow: hidden;
-}
-
-.page-hero::after {
-    content: '';
-    position: absolute;
-    inset: auto -10% -40% auto;
-    width: 320px;
-    height: 320px;
-    border-radius: 50%;
-    background: rgba(255, 255, 255, 0.08);
-    filter: blur(10px);
 }
 
 .page-hero .container {
