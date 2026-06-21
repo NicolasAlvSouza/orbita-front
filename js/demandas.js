@@ -201,7 +201,7 @@ async function carregarDemandas() {
 
 async function atualizarStatusApi(demanda, novoStatus) {
     const payload = {
-        titulo: demanda.titulo,
+        nome_cliente: demanda.nome_cliente || '',
         descricao: demanda.descricao || '',
         prioridade: demanda.prioridade || 'baixa',
         status: novoStatus,
