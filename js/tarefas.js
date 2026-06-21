@@ -2,6 +2,7 @@ const formTarefa = document.getElementById('form-tarefa');
 const inputId = document.getElementById('tarefa-id');
 const inputTitulo = document.getElementById('tarefa-titulo');
 const inputDescricao = document.getElementById('tarefa-descricao');
+const inputPrioridade = document.getElementById('tarefa-prioridade');
 const inputStatus = document.getElementById('tarefa-status');
 const modalTitle = document.getElementById('tarefaModalTitle');
 const btnNovaTarefa = document.getElementById('btn-nova-tarefa');
@@ -335,12 +336,18 @@ function setCamposSomenteLeitura(somenteLeitura) {
     inputTitulo.readOnly = somenteLeitura;
     inputDescricao.readOnly = somenteLeitura;
     inputStatus.disabled = somenteLeitura;
+    if (inputPrioridade) {
+        inputPrioridade.disabled = somenteLeitura;
+    }
 }
 
 function preencherModal(tarefa) {
     inputId.value = tarefa?.id || '';
     inputTitulo.value = tarefa?.titulo || '';
     inputDescricao.value = tarefa?.descricao || '';
+    if (inputPrioridade) {
+        inputPrioridade.value = tarefa?.prioridade || 'baixa';
+    }
     inputStatus.value = normalizarStatus(tarefa || {});
 }
 
@@ -369,7 +376,7 @@ function abrirNovaTarefa() {
     tarefaSelecionadaId = null;
     modalMode = 'create';
     produtosSelecionados = [];
-    preencherModal({ id: '', titulo: '', descricao: '', status: 'novo' });
+    preencherModal({ id: '', titulo: '', descricao: '', status: 'novo', prioridade: 'baixa' });
     atualizarTabelaProdutos();
     aplicarModoModal();
 }
@@ -440,6 +447,7 @@ async function criarTarefa(event) {
     const id = inputId.value;
     const titulo = inputTitulo.value.trim();
     const descricao = inputDescricao.value.trim();
+    const prioridade = inputPrioridade ? inputPrioridade.value : 'baixa';
     const status = inputStatus.value;
 
     if (!titulo) return;
@@ -449,6 +457,7 @@ async function criarTarefa(event) {
             const payload = { 
                 titulo, 
                 descricao, 
+                prioridade,
                 status, 
                 concluida: status === 'concluida',
                 produtos: produtosSelecionados
@@ -474,6 +483,7 @@ async function criarTarefa(event) {
                 body: { 
                     titulo, 
                     descricao, 
+                    prioridade,
                     status, 
                     concluida: status === 'concluida',
                     produtos: produtosSelecionados
@@ -499,6 +509,9 @@ async function criarTarefa(event) {
         if (tarefaModal) tarefaModal.hide();
         formTarefa.reset();
         inputStatus.value = 'novo';
+        if (inputPrioridade) {
+            inputPrioridade.value = 'baixa';
+        }
         produtosSelecionados = [];
         modalMode = 'create';
         tarefaSelecionadaId = null;
