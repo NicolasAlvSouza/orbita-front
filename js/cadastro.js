@@ -5,18 +5,38 @@ setupValidation(formCadastro);
 async function cadastrarUsuario(event) {
     event.preventDefault();
 
+    const nome = document.getElementById('cadastro-nome').value.trim();
+    const email = document.getElementById('cadastro-email').value.trim();
+    const senha = document.getElementById('cadastro-senha').value;
+
+    // Validação básica
+    if (!nome || !email || !senha) {
+        mostrarResultado('Por favor, preencha todos os campos obrigatórios.', 'error');
+        return;
+    }
+
+    if (senha.length < 6) {
+        mostrarResultado('A senha deve ter no mínimo 6 caracteres.', 'error');
+        return;
+    }
+
     const payload = {
-        nome: document.getElementById('cadastro-nome').value.trim(),
-        email: document.getElementById('cadastro-email').value.trim(),
-        telefone: document.getElementById('cadastro-telefone').value.trim(),
-        senha: document.getElementById('cadastro-senha').value,
+        nome,
+        email,
+        senha,
     };
 
     try {
+        console.log('Enviando cadastro:', payload);
         const usuario = await apiRequest('/usuarios', { method: 'POST', body: payload, auth: false });
-        mostrarResultado(`Cadastro realizado: ${usuario.nome}`);
+        console.log('Cadastro realizado:', usuario);
+        mostrarResultado(`Cadastro realizado com sucesso: ${usuario.nome}`);
         formCadastro.reset();
+        setTimeout(() => {
+            window.location.href = 'login.html';
+        }, 1500);
     } catch (erro) {
+        console.error('Erro no cadastro:', erro);
         mostrarResultado(`Falha no cadastro: ${erro.message}`, 'error');
     }
 }
