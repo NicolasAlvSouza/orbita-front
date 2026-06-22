@@ -366,7 +366,6 @@ async function criarTarefa(event) {
     try {
         if (modalMode === 'edit' && id) {
             const payload = {
-                id_usuario: getUsuarioLogado().id,
                 nome_cliente,
                 descricao,
                 prioridade,
@@ -392,7 +391,6 @@ async function criarTarefa(event) {
             const nova = await apiRequest('/demandas', {
                 method: 'POST',
                 body: {
-                    id_usuario: getUsuarioLogado().id,
                     nome_cliente,
                     descricao,
                     prioridade,
