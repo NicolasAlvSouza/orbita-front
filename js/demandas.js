@@ -73,7 +73,7 @@ function criarCardHtml(demanda) {
     const descricao = demanda.descricao || '';
     return `
         <div class="tarefa-card ${status}">
-            <div class="tarefa-card-title"><b>#${demanda.id}</b> ${demanda.titulo}</div>
+            <div class="tarefa-card-title">${demanda.nome_cliente}</div>
             ${descricao ? `<div class="tarefa-card-desc">${descricao}</div>` : ''}
             <div>${criarBadgeStatus(status)}</div>
         </div>
@@ -88,7 +88,7 @@ function criarKanbanItem(demanda) {
     item.dataset.id = demanda.id;
 
     item.innerHTML = `
-        <div class="tarefa-card-title"><b>#${demanda.id}</b> ${demanda.titulo}</div>
+        <div class="tarefa-card-title">${demanda.nome_cliente}</div>
         ${demanda.descricao ? `<div class="tarefa-card-desc">${demanda.descricao}</div>` : ''}
         <div>${criarBadgeStatus(status)}</div>
     `;
@@ -134,7 +134,7 @@ function renderTabela() {
         const linha = document.createElement('tr');
         linha.innerHTML = `
             <td>${demanda.id}</td>
-            <td>${demanda.titulo}</td>
+            <td>${demanda.nome_cliente}</td>
             <td>${demanda.descricao || '-'}</td>
             <td>${criarBadgeStatus(status)}</td>
             <td class="table-actions">
@@ -199,15 +199,13 @@ async function carregarDemandas() {
     }
 }
 
-async function atualizarStatusApi(demanda, novoStatus) {
+async function atualizarStatusApi(demanda, novoStatus, usuario = getUsuarioLogado()) {
     const payload = {
-        titulo: demanda.titulo,
-        descricao: demanda.descricao || '',
-        prioridade: demanda.prioridade || 'baixa',
-        status: novoStatus,
-        concluida: novoStatus === 'concluida',
-        produtos: window.montarProdutosParaDemanda(),
-    };
+    nome_cliente: demanda.nome_cliente,
+    descricao: demanda.descricao || '',
+    prioridade: demanda.prioridade || 'baixa',
+    status: novoStatus,
+};
 
     await apiRequest(`/demandas/${demanda.id}`, {
         method: 'PUT',
@@ -348,26 +346,31 @@ async function excluirTarefa(id = null) {
     }
 }
 
+
+
+btnViewCards.addEventListener('click', () => {
+    viewMode = 'cards';
+    aplicarViewMode();
+});
 async function criarTarefa(event) {
     event.preventDefault();
 
     const id = inputId.value;
-    const titulo = inputTitulo.value.trim();
+    const nome_cliente = inputTitulo.value.trim();
     const descricao = inputDescricao.value.trim();
     const prioridade = inputPrioridade ? inputPrioridade.value : 'baixa';
     const status = inputStatus.value;
 
-    if (!titulo) return;
+    if (!nome_cliente) return;
 
     try {
         if (modalMode === 'edit' && id) {
             const payload = {
-                titulo,
+                id_usuario: getUsuarioLogado().id,
+                nome_cliente,
                 descricao,
                 prioridade,
                 status,
-                concluida: status === 'concluida',
-                produtos: window.montarProdutosParaDemanda(),
             };
 
             const resposta = await apiRequest(`/demandas/${id}`, {
@@ -389,12 +392,11 @@ async function criarTarefa(event) {
             const nova = await apiRequest('/demandas', {
                 method: 'POST',
                 body: {
-                    titulo,
+                    id_usuario: getUsuarioLogado().id,
+                    nome_cliente,
                     descricao,
                     prioridade,
                     status,
-                    concluida: status === 'concluida',
-                    produtos: window.montarProdutosParaDemanda(),
                 },
             });
 
@@ -404,8 +406,6 @@ async function criarTarefa(event) {
                     descricao,
                     prioridade,
                     status,
-                    concluida: status === 'concluida',
-                    produtos: window.montarProdutosParaDemanda(),
                 });
             } else {
                 await carregarDemandas();
@@ -428,12 +428,6 @@ async function criarTarefa(event) {
         mostrarResultado(`Erro ao salvar demanda: ${erro.message}`, 'error');
     }
 }
-
-btnViewCards.addEventListener('click', () => {
-    viewMode = 'cards';
-    aplicarViewMode();
-});
-
 btnViewKanban.addEventListener('click', () => {
     viewMode = 'kanban';
     aplicarViewMode();
