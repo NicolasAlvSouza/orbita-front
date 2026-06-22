@@ -154,10 +154,15 @@ function criarBadgeStatus(status) {
 
 function criarCardHtml(tarefa) {
     const status = normalizarStatus(tarefa);
+    const prioridade = (tarefa.prioridade || 'baixa').toLowerCase();
     const descricao = tarefa.descricao || '';
+    const prioridadeLabel = prioridade.charAt(0).toUpperCase() + prioridade.slice(1);
     return `
         <div class="tarefa-card ${status}">
-            <div class="tarefa-card-title"><b>#${tarefa.id}</b> ${tarefa.titulo}</div>
+            <div class="tarefa-card-title-row">
+                <span class="prioridade-small ${prioridade}">${prioridadeLabel}</span>
+                <div class="tarefa-card-title"><b>#${tarefa.id}</b> ${tarefa.titulo}</div>
+            </div>
             ${descricao ? `<div class="tarefa-card-desc">${descricao}</div>` : ''}
             <div>${criarBadgeStatus(status)}</div>
         </div>
@@ -166,12 +171,18 @@ function criarCardHtml(tarefa) {
 
 function criarKanbanItem(tarefa) {
     const status = normalizarStatus(tarefa);
+    const prioridade = (tarefa.prioridade || 'baixa').toLowerCase();
     const item = document.createElement('div');
     item.className = `kanban-card ${status}`;
     item.draggable = true;
     item.dataset.id = tarefa.id;
 
+    const prioridadeLabel = prioridade.charAt(0).toUpperCase() + prioridade.slice(1);
+
     item.innerHTML = `
+        <div class="kanban-card-header">
+            <span class="prioridade ${prioridade}">${prioridadeLabel}</span>
+        </div>
         <div class="tarefa-card-title"><b>#${tarefa.id}</b> ${tarefa.titulo}</div>
         ${tarefa.descricao ? `<div class="tarefa-card-desc">${tarefa.descricao}</div>` : ''}
         <div>${criarBadgeStatus(status)}</div>
