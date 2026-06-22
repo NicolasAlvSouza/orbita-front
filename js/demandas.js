@@ -257,7 +257,7 @@ function setCamposSomenteLeitura(somenteLeitura) {
 
 function preencherModal(demanda) {
     inputId.value = demanda?.id || '';
-    inputTitulo.value = demanda?.titulo || '';
+    inputTitulo.value = demanda?.nome_cliente || '';
     inputDescricao.value = demanda?.descricao || '';
     if (inputPrioridade) {
         inputPrioridade.value = demanda?.prioridade || 'baixa';
