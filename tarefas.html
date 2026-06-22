@@ -85,9 +85,11 @@
             <table>
                 <thead>
                     <tr>
+                        <th>#ID</th>
                         <th>Nome do Cliente</th>
                         <th>Prioridade</th>
                         <th>Status</th>
+                        <th>Ações</th>
                     </tr>
                 </thead>
                 <tbody id="lista-tarefas-tabela"></tbody>
@@ -108,8 +110,8 @@
                     <div class="modal-body">
                         <input type="hidden" id="tarefa-id">
                         <div class="form-field">
-                            <label for="tarefa-nome-cliente">Nome do cliente</label>
-                            <input type="text" id="tarefa-nome-cliente" placeholder="Ex: João da Silva" required>
+                            <label for="tarefa-titulo">Nome do cliente</label>
+                            <input type="text" id="tarefa-titulo" placeholder="Ex: Revisar layout" required>
                         </div>
                         <div class="form-field">
                             <label for="tarefa-descricao">Descrição</label>
@@ -228,7 +230,5 @@
     <script src="js/produtos.js"></script>
     <script src="js/demanda-produto.js"></script>
     <script src="js/demandas.js"></script>
-    <script src="js/tarefas.js"></script>
-
 </body>
 </html>

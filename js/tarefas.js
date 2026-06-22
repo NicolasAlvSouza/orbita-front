@@ -1,6 +1,6 @@
 const formTarefa = document.getElementById('form-tarefa');
 const inputId = document.getElementById('tarefa-id');
-const inputNomeCliente = document.getElementById('tarefa-nome-cliente');
+const inputTitulo = document.getElementById('tarefa-titulo');
 const inputDescricao = document.getElementById('tarefa-descricao');
 const inputPrioridade = document.getElementById('tarefa-prioridade');
 const inputStatus = document.getElementById('tarefa-status');

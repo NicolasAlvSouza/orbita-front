@@ -28,21 +28,20 @@
 }
 
 body {
-    background:
-        linear-gradient(90deg, rgba(0,0,0,0.92) 0%, rgba(0,0,0,0.55) 38%, rgba(0,0,0,0.15) 60%, rgba(0,0,0,0) 75%),
-        #000000 url("../img/orbitaimg.jpg") center / cover no-repeat fixed;
+    background: var(--color-bg);
     color: var(--color-text);
-    min-height: 100vh;
 }
 
 /* ============================================================
-   TOPBAR — transparente sobre a imagem
+   TOPBAR
    ============================================================ */
 .topbar {
-    background: transparent;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
-    box-shadow: none;
-    backdrop-filter: blur(2px);
+    background: var(--color-surface);
+    border-bottom: 1px solid var(--color-border);
+    box-shadow: var(--shadow-sm);
+    position: sticky;
+    top: 0;
+    z-index: 100;
 }
 
 .topbar-inner {
@@ -145,20 +144,6 @@ body {
 }
 
 /* ============================================================
-   LAYOUT — card de cadastro fixo na lateral esquerda
-   ============================================================ */
-.container.center {
-    margin: 0;
-    max-width: 460px;
-    width: min(460px, 92%);
-    min-height: 100vh;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    padding: var(--space-8) var(--space-5) var(--space-12) var(--space-5);
-}
-
-/* ============================================================
    CARD DE INSTRUÇÃO (info-card)
    ============================================================ */
 .card.info-card {
@@ -176,7 +161,6 @@ body {
 .card {
     background: var(--color-surface);
     border: 1px solid var(--color-border);
-    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.6), 0 4px 16px rgba(255, 255, 255, 0.04);
 }
 
 .card-header {
@@ -284,33 +268,9 @@ a.button.secondary:hover {
 }
 
 /* ============================================================
-   FOOTER — discreto, dentro da coluna esquerda
+   FOOTER
    ============================================================ */
 footer {
     color: var(--color-text-muted);
-    border-top: none;
-    background: transparent;
-    text-align: left;
-    padding: 0 var(--space-5) var(--space-6) var(--space-5);
-    margin-top: -1.5rem;
-    position: relative;
-    font-size: var(--font-size-xs);
-}
-
-/* ============================================================
-   RESPONSIVO — em telas estreitas, a imagem fica só de fundo
-   e o card volta a ocupar a largura central
-   ============================================================ */
-@media (max-width: 768px) {
-    .container.center {
-        width: 100%;
-        max-width: 100%;
-        align-items: center;
-    }
-
-    body {
-        background:
-            linear-gradient(180deg, rgba(0,0,0,0.55) 0%, rgba(0,0,0,0.85) 70%, rgba(0,0,0,0.95) 100%),
-            #000000 url("../img/orbitaimg.jpg") center / cover no-repeat fixed;
-    }
+    border-top: 1px solid var(--color-border);
 }

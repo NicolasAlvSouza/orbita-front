@@ -1,6 +1,6 @@
 const formTarefa = document.getElementById('form-tarefa');
 const inputId = document.getElementById('tarefa-id');
-const inputNomeCliente = document.getElementById('tarefa-nome-cliente');
+const inputTitulo = document.getElementById('tarefa-titulo');
 const inputDescricao = document.getElementById('tarefa-descricao');
 const inputPrioridade = document.getElementById('tarefa-prioridade');
 const inputStatus = document.getElementById('tarefa-status');
@@ -73,7 +73,7 @@ function criarCardHtml(demanda) {
     const descricao = demanda.descricao || '';
     return `
         <div class="tarefa-card ${status}">
-            <div class="tarefa-card-title"><b>#${demanda.id}</b> ${demanda.nome_cliente}</div>
+            <div class="tarefa-card-title"><b>#${demanda.id}</b> ${demanda.titulo}</div>
             ${descricao ? `<div class="tarefa-card-desc">${descricao}</div>` : ''}
             <div>${criarBadgeStatus(status)}</div>
         </div>
@@ -88,7 +88,7 @@ function criarKanbanItem(demanda) {
     item.dataset.id = demanda.id;
 
     item.innerHTML = `
-        <div class="tarefa-card-title"><b>#${demanda.id}</b> ${demanda.nome_cliente}</div>
+        <div class="tarefa-card-title"><b>#${demanda.id}</b> ${demanda.titulo}</div>
         ${demanda.descricao ? `<div class="tarefa-card-desc">${demanda.descricao}</div>` : ''}
         <div>${criarBadgeStatus(status)}</div>
     `;
@@ -134,7 +134,7 @@ function renderTabela() {
         const linha = document.createElement('tr');
         linha.innerHTML = `
             <td>${demanda.id}</td>
-            <td>${demanda.nome_cliente}</td>
+            <td>${demanda.titulo}</td>
             <td>${demanda.descricao || '-'}</td>
             <td>${criarBadgeStatus(status)}</td>
             <td class="table-actions">
@@ -201,7 +201,7 @@ async function carregarDemandas() {
 
 async function atualizarStatusApi(demanda, novoStatus) {
     const payload = {
-        nome_cliente: demanda.nome_cliente || '',
+        titulo: demanda.titulo,
         descricao: demanda.descricao || '',
         prioridade: demanda.prioridade || 'baixa',
         status: novoStatus,
@@ -259,7 +259,7 @@ function setCamposSomenteLeitura(somenteLeitura) {
 
 function preencherModal(demanda) {
     inputId.value = demanda?.id || '';
-    inputNomeCliente.value = demanda?.nome_cliente || '';
+    inputTitulo.value = demanda?.titulo || '';
     inputDescricao.value = demanda?.descricao || '';
     if (inputPrioridade) {
         inputPrioridade.value = demanda?.prioridade || 'baixa';
@@ -291,7 +291,7 @@ function abrirNovaTarefa() {
     tarefaSelecionadaId = null;
     modalMode = 'create';
     window.limparProdutosSelecionados();
-    preencherModal({ id: '', nome_cliente: '', descricao: '', status: 'novo', prioridade: 'media' });
+    preencherModal({ id: '', titulo: '', descricao: '', status: 'novo', prioridade: 'baixa' });
     window.atualizarTabelaProdutos();
     aplicarModoModal();
 }
@@ -327,7 +327,7 @@ async function excluirTarefa(id = null) {
     const confirmar = window.Swal
         ? await Swal.fire({
             icon: 'warning',
-            text: `Excluir a demanda "${demanda.nome_cliente}"?`,
+            text: `Excluir a demanda "${demanda.titulo}"?`,
             showCancelButton: true,
             confirmButtonText: 'Excluir',
             cancelButtonText: 'Cancelar',
@@ -352,17 +352,17 @@ async function criarTarefa(event) {
     event.preventDefault();
 
     const id = inputId.value;
-    const nome_cliente = inputNomeCliente.value.trim();
+    const titulo = inputTitulo.value.trim();
     const descricao = inputDescricao.value.trim();
     const prioridade = inputPrioridade ? inputPrioridade.value : 'baixa';
     const status = inputStatus.value;
 
-    if (!nome_cliente) return;
+    if (!titulo) return;
 
     try {
         if (modalMode === 'edit' && id) {
             const payload = {
-                nome_cliente,
+                titulo,
                 descricao,
                 prioridade,
                 status,
@@ -389,7 +389,7 @@ async function criarTarefa(event) {
             const nova = await apiRequest('/demandas', {
                 method: 'POST',
                 body: {
-                    nome_cliente,
+                    titulo,
                     descricao,
                     prioridade,
                     status,
