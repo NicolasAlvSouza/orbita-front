@@ -199,7 +199,7 @@ async function carregarDemandas() {
     }
 }
 
-async function atualizarStatusApi(demanda, novoStatus, usuario = getUsuarioLogado()) {
+async function atualizarStatusApi(demanda, novoStatus) {
     const payload = {
     nome_cliente: demanda.nome_cliente,
     descricao: demanda.descricao || '',
