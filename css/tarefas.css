@@ -1000,6 +1000,31 @@ table tbody tr:hover { background: rgba(255,255,255,0.03); }
     border-color: #000;
 }
 
+.search-toolbar {
+    margin-bottom: var(--space-4);
+}
+
+#busca-tarefas {
+    width: 100%;
+    padding: 10px var(--space-3);
+    border: 1px solid rgba(255, 255, 255, 0.16);
+    border-radius: var(--radius-md);
+    background: rgba(255, 255, 255, 0.05);
+    color: var(--color-text);
+    transition: border-color var(--transition), background var(--transition), box-shadow var(--transition);
+}
+
+#busca-tarefas:focus {
+    outline: none;
+    border-color: rgba(255, 255, 255, 0.45);
+    background: rgba(255, 255, 255, 0.1);
+    box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.08);
+}
+
+#busca-tarefas::placeholder {
+    color: rgba(255, 255, 255, 0.65);
+}
+
 .task-form-simple {
     display: grid;
     grid-template-columns: 1fr 220px auto;

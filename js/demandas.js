@@ -13,6 +13,7 @@ const btnModalProdutos = document.getElementById('btn-modal-produtos');
 
 const listaCards = document.getElementById('lista-tarefas-cards');
 const listaTabela = document.getElementById('lista-tarefas-tabela');
+const inputBusca = document.getElementById('busca-tarefas');
 const cardsWrapper = document.getElementById('tarefas-cards-wrapper');
 const kanbanWrapper = document.getElementById('tarefas-kanban-wrapper');
 const tabelaWrapper = document.getElementById('tarefas-tabela-wrapper');
@@ -41,6 +42,18 @@ let demandas = [];
 let viewMode = 'cards';
 let tarefaSelecionadaId = null;
 let modalMode = 'create';
+let termoBusca = '';
+
+function getDemandasFiltradas() {
+    const termo = termoBusca.trim().toLowerCase();
+    if (!termo) return demandas;
+
+    return demandas.filter((demanda) => {
+        const nome = String(demanda.nome_cliente || demanda.titulo || '').toLowerCase();
+        const prioridade = String(demanda.prioridade || '').toLowerCase();
+        return nome.includes(termo) || prioridade.includes(termo);
+    });
+}
 
 function normalizarStatus(tarefa) {
     const bruto = String(tarefa?.status || '').toLowerCase();
@@ -159,13 +172,14 @@ function criarKanbanItem(demanda) {
 
 function renderCards() {
     listaCards.innerHTML = '';
+    const lista = getDemandasFiltradas();
 
-    if (!demandas.length) {
+    if (!lista.length) {
         listaCards.innerHTML = '<div class="empty-state"><p>Nenhuma demanda encontrada.</p></div>';
         return;
     }
 
-    demandas.forEach((demanda) => {
+    lista.forEach((demanda) => {
         const card = document.createElement('div');
         card.innerHTML = criarCardHtml(demanda);
         const item = card.firstElementChild;
@@ -176,13 +190,14 @@ function renderCards() {
 
 function renderTabela() {
     listaTabela.innerHTML = '';
+    const lista = getDemandasFiltradas();
 
-    if (!demandas.length) {
+    if (!lista.length) {
         listaTabela.innerHTML = '<tr><td colspan="5">Nenhuma demanda encontrada.</td></tr>';
         return;
     }
 
-    demandas.forEach((demanda) => {
+    lista.forEach((demanda) => {
         const status = normalizarStatus(demanda);
         const linha = document.createElement('tr');
         linha.innerHTML = `
@@ -206,8 +221,9 @@ function renderKanban() {
     colunaEntrega.innerHTML = '';
     colunaConcluida.innerHTML = '';
     colunaAtrasada.innerHTML = '';
+    const lista = getDemandasFiltradas();
 
-    demandas.forEach((demanda) => {
+    lista.forEach((demanda) => {
         const status = normalizarStatus(demanda);
         const card = criarKanbanItem(demanda);
 
@@ -421,6 +437,14 @@ btnViewCards.addEventListener('click', () => {
     viewMode = 'cards';
     aplicarViewMode();
 });
+
+if (inputBusca) {
+    inputBusca.addEventListener('input', (event) => {
+        termoBusca = event.target.value || '';
+        renderTudo();
+    });
+}
+
 async function criarTarefa(event) {
     event.preventDefault();
 
