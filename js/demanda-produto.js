@@ -4,16 +4,39 @@ function getProdutosSelecionados() {
     return produtosSelecionados;
 }
 
+function normalizarProdutoSelecionado(item) {
+    if (!item) return null;
+
+    const produto_id = Number(
+        item.produto_id ?? item.id_produto ?? item.produtoId ?? item.id
+    );
+
+    return {
+        produto_id,
+        quantidade: Number(item.quantidade ?? 1),
+        valor_unitario: item.valor_unitario ?? null,
+        observacao: item.observacao ?? ''
+    };
+}
+
 function setProdutosSelecionados(lista) {
-    produtosSelecionados = Array.isArray(lista) ? [...lista] : [];
+    produtosSelecionados = Array.isArray(lista)
+        ? lista.map(normalizarProdutoSelecionado).filter((item) => item && item.produtoId != null)
+        : [];
     atualizarTabelaProdutos();
 }
 
 function montarProdutosParaDemanda() {
-    return produtosSelecionados.map((item) => ({
-        id_produto: item.produtoId || item.id_produto || item.id,
-        quantidade: Number(item.quantidade || 1),
-    }));
+    return produtosSelecionados.map((item) => {
+        const produtoId = Number(item.produtoId ?? item.id_produto ?? item.produto_id ?? item.id);
+        return {
+            produtoId,
+            produto_id: produtoId,
+            quantidade: Number(item.quantidade ?? 1),
+            valor_unitario: item.valor_unitario ?? null,
+            observacao: item.observacao ?? null
+        };
+    });
 }
 
 function atualizarTabelaProdutos() {
@@ -35,18 +58,24 @@ function atualizarTabelaProdutos() {
     tabelaProdutos.style.display = 'table';
 
     produtosSelecionados.forEach((item, index) => {
-        const produto = window.getProdutoPorId(item.produtoId || item.id_produto || item.id);
-        const nomeProduto = produto ? window.getNomeProduto(produto) : `Produto ${item.produtoId || item.id_produto || item.id}`;
+        const produtoId = item.produtoId ?? item.id_produto ?? item.produto_id ?? item.id;
+        const produto = window.getProdutoPorId(produtoId);
+        const nomeProduto = produto ? window.getNomeProduto(produto) : `Produto ${produtoId}`;
 
         const tr = document.createElement('tr');
         tr.innerHTML = `
             <td>${nomeProduto}</td>
             <td>${item.quantidade}</td>
-            <td><button type="button" class="btn-remover-produto" onclick="removerProdutoSelecionado(${index})">Remover</button></td>
+            <td>${item.valor_unitario ?? '-'}</td>
+            <td>${item.observacao ?? '-'}</td>
+            <td>
+                <button type="button" class="btn-remover-produto" onclick="removerProdutoSelecionado(${index})">Remover</button>
+            </td>
         `;
         tbody.appendChild(tr);
     });
 }
+
 
 function abrirModalProduto() {
     const produtoModalEl = document.getElementById('produtoModal');
@@ -62,29 +91,44 @@ function abrirModalProduto() {
 function adicionarProduto(event) {
     event.preventDefault();
 
-    const produtoId = document.getElementById('produto-select').value;
-    const quantidade = parseInt(document.getElementById('produto-quantidade').value, 10);
+    const produtoSelect = document.getElementById('produto-select');
+    const quantidadeInput = document.getElementById('produto-quantidade');
+
+    const produtoId = produtoSelect?.value;
+    const quantidade = parseInt(quantidadeInput?.value, 10);
 
     if (!produtoId || !quantidade || quantidade < 1) {
         mostrarResultado('Por favor, selecione um produto e informe uma quantidade válida', 'error');
         return;
     }
 
-    const jaAdicionado = produtosSelecionados.find((p) => String(p.produtoId) === String(produtoId));
+    const jaAdicionado = produtosSelecionados.find(
+    (p) => String(p.produto_id ?? p.produtoId) === String(produtoId)
+);
 
     if (jaAdicionado) {
         jaAdicionado.quantidade += quantidade;
     } else {
         produtosSelecionados.push({
-            produtoId: produtoId,
+            produtoId: Number(produtoId),
             quantidade,
+            valor_unitario: null,
+            observacao: ''
         });
     }
 
+    // atualiza tabela
     atualizarTabelaProdutos();
-    document.getElementById('form-produto').reset();
-    document.getElementById('produto-quantidade').value = '1';
 
+    // reset form
+    const form = document.getElementById('form-produto');
+    if (form) form.reset();
+
+    if (quantidadeInput) {
+        quantidadeInput.value = '1';
+    }
+
+    // fecha modal
     const produtoModalEl = document.getElementById('produtoModal');
     if (produtoModalEl && window.bootstrap) {
         bootstrap.Modal.getOrCreateInstance(produtoModalEl).hide();
@@ -93,13 +137,13 @@ function adicionarProduto(event) {
     mostrarResultado('Produto adicionado com sucesso!');
 }
 
-function removerProdutoSelecionado(index) {
-    produtosSelecionados.splice(index, 1);
+function limparProdutosSelecionados() {
+    produtosSelecionados = [];
     atualizarTabelaProdutos();
 }
 
-function limparProdutosSelecionados() {
-    produtosSelecionados = [];
+function removerProdutoSelecionado(index) {
+    produtosSelecionados.splice(index, 1);
     atualizarTabelaProdutos();
 }
 
@@ -110,3 +154,4 @@ window.adicionarProduto = adicionarProduto;
 window.removerProdutoSelecionado = removerProdutoSelecionado;
 window.abrirModalProduto = abrirModalProduto;
 window.limparProdutosSelecionados = limparProdutosSelecionados;
+window.atualizarTabelaProdutos = atualizarTabelaProdutos;

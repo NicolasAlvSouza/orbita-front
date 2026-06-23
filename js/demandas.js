@@ -374,12 +374,15 @@ async function criarTarefa(event) {
     if (!nome_cliente) return;
 
     try {
+        const produtos = window.montarProdutosParaDemanda();
+
         if (modalMode === 'edit' && id) {
             const payload = {
                 nome_cliente,
                 descricao,
                 prioridade,
                 status,
+                produtos,
             };
 
             const resposta = await apiRequest(`/demandas/${id}`, {
@@ -398,22 +401,23 @@ async function criarTarefa(event) {
 
             mostrarResultado('Demanda atualizada com sucesso.');
         } else {
+            const payload = {
+                nome_cliente,
+                descricao,
+                prioridade,
+                status,
+                produtos,
+            };
+
             const nova = await apiRequest('/demandas', {
                 method: 'POST',
-                body: {
-                    nome_cliente,
-                    descricao,
-                    prioridade,
-                    status,
-                },
+                body: payload,
             });
 
             if (nova && nova.id) {
                 demandas.push({
                     ...nova,
-                    descricao,
-                    prioridade,
-                    status,
+                    ...payload,
                 });
             } else {
                 await carregarDemandas();
