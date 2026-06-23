@@ -8,7 +8,7 @@ function normalizarProdutoSelecionado(item) {
     if (!item) return null;
 
     const produto_id = Number(
-        item.produto_id ?? item.id_produto ?? item.produtoId ?? item.id
+        item.produto_id ?? item.id_produto ?? item.produto_id ?? item.id
     );
 
     return {
@@ -21,22 +21,18 @@ function normalizarProdutoSelecionado(item) {
 
 function setProdutosSelecionados(lista) {
     produtosSelecionados = Array.isArray(lista)
-        ? lista.map(normalizarProdutoSelecionado).filter((item) => item && item.produtoId != null)
+        ? lista.map(normalizarProdutoSelecionado).filter((item) => item && item.produto_id != null)
         : [];
     atualizarTabelaProdutos();
 }
 
 function montarProdutosParaDemanda() {
-    return produtosSelecionados.map((item) => {
-        const produtoId = Number(item.produtoId ?? item.id_produto ?? item.produto_id ?? item.id);
-        return {
-            produtoId,
-            produto_id: produtoId,
-            quantidade: Number(item.quantidade ?? 1),
-            valor_unitario: item.valor_unitario ?? null,
-            observacao: item.observacao ?? null
-        };
-    });
+    return produtosSelecionados.map((item) => ({
+        produto_id: Number(item.produto_id),
+        quantidade: Number(item.quantidade ?? 1),
+        valor_unitario: item.valor_unitario ?? null,
+        observacao: item.observacao ?? null
+    }));
 }
 
 function atualizarTabelaProdutos() {
@@ -58,9 +54,9 @@ function atualizarTabelaProdutos() {
     tabelaProdutos.style.display = 'table';
 
     produtosSelecionados.forEach((item, index) => {
-        const produtoId = item.produtoId ?? item.id_produto ?? item.produto_id ?? item.id;
-        const produto = window.getProdutoPorId(produtoId);
-        const nomeProduto = produto ? window.getNomeProduto(produto) : `Produto ${produtoId}`;
+        const produto_id = item.produto_id ?? item.id_produto ?? item.produto_id ?? item.id;
+        const produto = window.getProdutoPorId(produto_id);
+        const nomeProduto = produto ? window.getNomeProduto(produto) : `Produto ${produto_id}`;
 
         const tr = document.createElement('tr');
         tr.innerHTML = `
@@ -94,23 +90,23 @@ function adicionarProduto(event) {
     const produtoSelect = document.getElementById('produto-select');
     const quantidadeInput = document.getElementById('produto-quantidade');
 
-    const produtoId = produtoSelect?.value;
+    const produto_id = produtoSelect?.value;
     const quantidade = parseInt(quantidadeInput?.value, 10);
 
-    if (!produtoId || !quantidade || quantidade < 1) {
+    if (!produto_id || !quantidade || quantidade < 1) {
         mostrarResultado('Por favor, selecione um produto e informe uma quantidade válida', 'error');
         return;
     }
 
     const jaAdicionado = produtosSelecionados.find(
-    (p) => String(p.produto_id ?? p.produtoId) === String(produtoId)
+    (p) => String(p.produto_id ?? p.produto_id) === String(produto_id)
 );
 
     if (jaAdicionado) {
         jaAdicionado.quantidade += quantidade;
     } else {
         produtosSelecionados.push({
-            produtoId: Number(produtoId),
+            produto_id: Number(produto_id),
             quantidade,
             valor_unitario: null,
             observacao: ''
