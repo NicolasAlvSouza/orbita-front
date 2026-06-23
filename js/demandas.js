@@ -68,6 +68,46 @@ function criarBadgeStatus(status) {
     return `<span class="status-pill ${status}">${STATUS_LABEL[status] || 'Novo'}</span>`;
 }
 
+function formatCurrency(valor) {
+    return Number(valor || 0).toLocaleString('pt-BR', {
+        style: 'currency',
+        currency: 'BRL'
+    });
+}
+
+function calcularTotalProduto(item = {}) {
+    const quantidade = Number(item.quantidade || 1);
+    const valorUnitario = Number(item.valor_unitario ?? item.preco ?? 0);
+    return quantidade * valorUnitario;
+}
+
+function calcularTotalDemanda(produtos = []) {
+    if (!Array.isArray(produtos)) return 0;
+    return produtos.reduce((total, item) => total + calcularTotalProduto(item), 0);
+}
+
+function formatProdutosDemanda(produtos = []) {
+    if (!Array.isArray(produtos) || produtos.length === 0) {
+        return '<span class="text-muted">Nenhum produto</span>';
+    }
+
+    return produtos.map((item) => {
+        const nome =
+            item.produto_nome ||
+            item.nome ||
+            `Produto ${item.produto_id || item.id}`;
+
+        const quantidade = Number(item.quantidade || 1);
+        const valorUnitario = item.valor_unitario != null ? formatCurrency(item.valor_unitario) : '';
+        const totalProduto = item.valor_unitario != null ? formatCurrency(calcularTotalProduto(item)) : '';
+
+        return `
+            ${nome}
+            (${quantidade}${valorUnitario ? ` x ${valorUnitario}` : ''}${totalProduto ? ` = ${totalProduto}` : ''})
+        `;
+    }).join('<br>');
+}
+
 function criarCardHtml(demanda) {
     const status = normalizarStatus(demanda);
     const prioridade = (demanda.prioridade || 'baixa').toLowerCase();
@@ -95,10 +135,12 @@ function criarKanbanItem(demanda) {
     item.dataset.id = demanda.id;
 
     const prioridadeLabel = prioridade.charAt(0).toUpperCase() + prioridade.slice(1);
+    const totalVenda = formatCurrency(calcularTotalDemanda(demanda.produtos));
 
     item.innerHTML = `
         <div class="kanban-card-header">
             <span class="prioridade ${prioridade}">${prioridadeLabel}</span>
+            <span class="kanban-total">${totalVenda}</span>
         </div>
         <div class="tarefa-card-title">${demanda.nome_cliente}</div>
         <div>${criarBadgeStatus(status)}</div>
@@ -146,6 +188,7 @@ function renderTabela() {
         linha.innerHTML = `
             <td>${demanda.nome_cliente}</td>
             <td>${demanda.descricao || '-'}</td>
+            <td>${formatProdutosDemanda(demanda.produtos)}</td>
             <td>${criarBadgeStatus(status)}</td>
             <td class="table-actions">
                 <button type="button" class="small" onclick="verTarefa(${demanda.id})">Ver</button>
@@ -206,6 +249,15 @@ async function carregarDemandas() {
         renderTudo();
     } catch (erro) {
         mostrarResultado(`Erro ao carregar demandas: ${erro.message}`, 'error');
+    }
+}
+
+async function carregarDemandaDetalhada(id) {
+    try {
+        return await apiRequest(`/demandas/${id}`);
+    } catch (erro) {
+        console.warn(`Não foi possível carregar detalhes da demanda ${id}: ${erro.message}`);
+        return null;
     }
 }
 
@@ -283,6 +335,7 @@ function aplicarModoModal() {
     btnModalSalvar.classList.toggle('is-hidden', isView);
     btnModalEditar.classList.toggle('is-hidden', !isView);
     btnModalExcluir.classList.toggle('is-hidden', isCreate);
+    btnModalProdutos.classList.toggle('is-hidden', isView);
 
     if (isCreate) {
         modalTitle.textContent = 'Nova demanda';
@@ -304,8 +357,11 @@ function abrirNovaTarefa() {
     aplicarModoModal();
 }
 
-function verTarefa(id) {
-    const demanda = getDemandaById(id);
+async function verTarefa(id) {
+    let demanda = getDemandaById(id);
+    if (!demanda) {
+        demanda = await carregarDemandaDetalhada(id);
+    }
     if (!demanda) return;
 
     tarefaSelecionadaId = demanda.id;
@@ -316,8 +372,11 @@ function verTarefa(id) {
     tarefaModal?.show();
 }
 
-function editarTarefa(id = null) {
-    const demanda = getDemandaById(id || tarefaSelecionadaId);
+async function editarTarefa(id = null) {
+    let demanda = getDemandaById(id || tarefaSelecionadaId);
+    if (!demanda) {
+        demanda = await carregarDemandaDetalhada(id || tarefaSelecionadaId);
+    }
     if (!demanda) return;
 
     tarefaSelecionadaId = demanda.id;

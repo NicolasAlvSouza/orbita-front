@@ -1,17 +1,19 @@
 /* ============================================================
    VARIÁVEIS DE DESIGN (tokens)
    ============================================================ */
+@import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300..700&display=swap');
+
 :root {
     /* Cores primárias (cinza, azul, verde) */
-    --color-primary:        #000000;
-    --color-primary-dark:   #000000;
-    --color-primary-light:  #ffffff;
+    --color-primary:        #ffffff;
+    --color-primary-dark:   #f8fafc;
+    --color-primary-light:  rgba(255, 255, 255, 0.12);
 
     /* Cores de superfície */
     --color-bg:             #000000;
     --color-surface:        #000000;
-    --color-surface-alt:    #000000;
-    --color-border:         #000000;
+    --color-surface-alt:    #111111;
+    --color-border:         #181818;
 
     /* Cores de texto */
     --color-text:           rgb(255, 255, 255);
@@ -43,7 +45,7 @@
     --space-12: 48px;
 
     /* Tipografia */
-    --font-sans: 'Inter', system-ui, -apple-system, sans-serif;
+    --font-sans: 'Space Grotesk', system-ui, -apple-system, sans-serif;
     --font-size-xs:   0.75rem;
     --font-size-sm:   0.875rem;
     --font-size-base: 1rem;
@@ -82,11 +84,34 @@ html { scroll-behavior: smooth; }
 body {
     font-family: var(--font-sans);
     font-size: var(--font-size-base);
-    background: var(--color-bg);
+    background: linear-gradient(rgba(0, 0, 0, 0.55), rgba(0, 0, 0, 0.55)), url("../img/cel.jpg") center/cover no-repeat;
+    background-attachment: fixed;
     color: var(--color-text);
     min-height: 100vh;
     line-height: 1.6;
     -webkit-font-smoothing: antialiased;
+    text-shadow: 0 1px 10px rgba(255, 255, 255, 0.08);
+}
+
+body,
+.topbar,
+.card,
+.modal-content,
+.form-label,
+.form-text,
+.perfil-item,
+.token-box,
+.app-overline,
+.app-title,
+.app-subtitle,
+.app-muted,
+.nav-link,
+button,
+input,
+select,
+textarea,
+pre {
+    color: var(--color-text);
 }
 
 /* ============================================================
